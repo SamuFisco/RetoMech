@@ -954,7 +954,6 @@ GameObject:
   - component: {fileID: 499584925}
   - component: {fileID: 499584926}
   - component: {fileID: 499584927}
-  - component: {fileID: 499584928}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1064,6 +1063,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ab62138b6b0cb478aedf13b9f6a78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centralImage: {fileID: 1550288132}
+  moveAmount: 10
+  moveTime: 0.5
+  moveRight: 0
+  moveLeft: 0
+  moveUp: 0
+  moveDown: 0
+  audioSource: {fileID: 0}
+  tiltSound: {fileID: 0}
 --- !u!82 &499584924
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1214,21 +1222,6 @@ MonoBehaviour:
   - {fileID: 1606866152}
   - {fileID: 1448270349}
   moveDuration: 0.5
---- !u!114 &499584928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499584918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06782c97d84257440ba26e5a1c603c16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centralImage: {fileID: 1550288132}
-  rotationTime: 0.5
-  rotationAmount: 10
 --- !u!1 &644517148
 GameObject:
   m_ObjectHideFlags: 0
@@ -1943,7 +1936,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 65cae183d5bee1a4a93fa253dd619458, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 24b62ce569767494eb1f9dbd3fdbc3d4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1975,7 +1968,6 @@ GameObject:
   - component: {fileID: 1448270351}
   - component: {fileID: 1448270354}
   - component: {fileID: 1448270355}
-  - component: {fileID: 1448270356}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2121,6 +2113,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ab62138b6b0cb478aedf13b9f6a78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centralImage: {fileID: 1550288132}
+  moveAmount: 15
+  moveTime: 1
+  moveRight: 0
+  moveLeft: 1
+  moveUp: 0
+  moveDown: 0
+  audioSource: {fileID: 1550288135}
+  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!114 &1448270355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2135,27 +2136,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonText: {fileID: 644517150}
   fadeDuration: 0.5
---- !u!114 &1448270356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1448270349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79ed1fdbf9218c44891825659a93351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centralImage: {fileID: 1550288132}
-  moveAmount: 10
-  moveTime: 0.5
-  moveRight: 0
-  moveLeft: 1
-  moveUp: 0
-  moveDown: 0
-  audioSource: {fileID: 0}
-  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!1 &1550288131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,7 +2194,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a58599c77c9d24745a995fec34220ae0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3bcecbb0634c6df4697e10f89a6e7c1d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2342,7 +2322,6 @@ GameObject:
   - component: {fileID: 1606866154}
   - component: {fileID: 1606866157}
   - component: {fileID: 1606866158}
-  - component: {fileID: 1606866159}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2464,6 +2443,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ab62138b6b0cb478aedf13b9f6a78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centralImage: {fileID: 1550288132}
+  moveAmount: 10
+  moveTime: 0.5
+  moveRight: 1
+  moveLeft: 0
+  moveUp: 0
+  moveDown: 0
+  audioSource: {fileID: 1550288135}
+  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!114 &1606866158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2478,27 +2466,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonText: {fileID: 1700640395}
   fadeDuration: 0.5
---- !u!114 &1606866159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1606866152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79ed1fdbf9218c44891825659a93351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centralImage: {fileID: 1550288132}
-  moveAmount: 10
-  moveTime: 0.5
-  moveRight: 1
-  moveLeft: 0
-  moveUp: 0
-  moveDown: 0
-  audioSource: {fileID: 0}
-  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!1 &1700640393
 GameObject:
   m_ObjectHideFlags: 0
@@ -2722,7 +2689,6 @@ GameObject:
   - component: {fileID: 1836352874}
   - component: {fileID: 1836352877}
   - component: {fileID: 1836352878}
-  - component: {fileID: 1836352879}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -2806,18 +2772,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 499584918}
-        m_TargetAssemblyTypeName: BackgroundZoom, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1836352875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2868,6 +2822,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ab62138b6b0cb478aedf13b9f6a78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centralImage: {fileID: 1550288132}
+  moveAmount: 10
+  moveTime: 0.5
+  moveRight: 0
+  moveLeft: 0
+  moveUp: 1
+  moveDown: 0
+  audioSource: {fileID: 1550288135}
+  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!114 &1836352878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2882,27 +2845,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonText: {fileID: 766947427}
   fadeDuration: 0.5
---- !u!114 &1836352879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1836352872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79ed1fdbf9218c44891825659a93351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centralImage: {fileID: 1550288132}
-  moveAmount: 10
-  moveTime: 0.5
-  moveRight: 0
-  moveLeft: 0
-  moveUp: 1
-  moveDown: 0
-  audioSource: {fileID: 0}
-  tiltSound: {fileID: 8300000, guid: 011f710f9b3142644ad0e2bf70213812, type: 3}
 --- !u!1 &1980428727
 GameObject:
   m_ObjectHideFlags: 0

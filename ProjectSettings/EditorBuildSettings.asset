@@ -17,4 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ScenaWin.unity
     guid: f4bdc89b9944c7842be1c6a059fc7b60
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 9d1a58a3fbaf2f640bc527a3e6979446, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: dff386eb8af1d3f46ac27c45e265a078, type: 3}
