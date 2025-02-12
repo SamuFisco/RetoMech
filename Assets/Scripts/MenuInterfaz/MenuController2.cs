@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class MenuController2 : MonoBehaviour
 {
     public RectTransform menu; // Referencia al Menú (UI)
     public EventSystem eventSystem; // Referencia al EventSystem
-    public GameObject primerBoton; // Primer botón seleccionado al abrir el menú
 
     private bool menuActivo = false;
     private float posicionInicialY = 1120f;
@@ -39,16 +39,6 @@ public class MenuController2 : MonoBehaviour
         // Activar el cursor y desbloquearlo cuando el menú está activo
         Cursor.visible = menuActivo;
         Cursor.lockState = menuActivo ? CursorLockMode.None : CursorLockMode.Locked;
-
-        if (menuActivo)
-        {
-            // Asegurar que el primer botón esté seleccionado
-            eventSystem.SetSelectedGameObject(primerBoton);
-        }
-        else
-        {
-            eventSystem.SetSelectedGameObject(null);
-        }
     }
 
     public void CerrarMenu()
@@ -61,13 +51,24 @@ public class MenuController2 : MonoBehaviour
 
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-
-            eventSystem.SetSelectedGameObject(null);
         }
     }
 
     public void SalirDelJuego()
     {
-        Application.Quit();
+        print("Exit");
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false; // Cierra el juego en el Editor de Unity
+#else
+            Application.Quit(); // Cierra la aplicación en la Build
+#endif
     }
+    public void ScenaMenu()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene("ScenaMenu");
+
+    }
+
 }
