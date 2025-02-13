@@ -1,27 +1,54 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerShooting : MonoBehaviour
 {
-    public Transform firePoint; // Punto de disparo en el jugador
+    public Transform cañonIzquierdo;  // Punto de disparo del cañón izquierdo
+    public Transform cañonDerecho;   // Punto de disparo del cañón derecho
     public float projectileSpeed = 20f;
+    public float tiempoRecarga = 1f; // Tiempo entre disparos
+    private bool puedeDisparar = true;
+
+    public Animator animator; // Referencia a la animación de disparo
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && puedeDisparar)
         {
-            Shoot();
+            StartCoroutine(Disparar());
         }
     }
 
-    void Shoot()
+    IEnumerator Disparar()
     {
-        GameObject projectile = ProjectilePool.instance.GetProjectile();
+        puedeDisparar = false;
 
-        if (projectile != null)
+        // Activar animación de disparo
+        if (animator != null)
         {
-            projectile.transform.position = firePoint.position;
-            projectile.transform.rotation = firePoint.rotation;
-            projectile.GetComponent<Rigidbody>().velocity = firePoint.forward * projectileSpeed;
+            animator.SetTrigger("Disparar");
         }
+
+        // Obtener proyectiles del pool
+        GameObject proyectilIzq = ProjectilePool.instance.GetProjectile();
+        GameObject proyectilDer = ProjectilePool.instance.GetProjectile();
+
+        if (proyectilIzq != null && proyectilDer != null)
+        {
+            // Posicionar los proyectiles en los cañones
+            proyectilIzq.transform.position = cañonIzquierdo.position;
+            proyectilIzq.transform.rotation = cañonIzquierdo.rotation;
+
+            proyectilDer.transform.position = cañonDerecho.position;
+            proyectilDer.transform.rotation = cañonDerecho.rotation;
+
+            // Asegurar que los proyectiles disparan hacia adelante
+            proyectilIzq.GetComponent<Rigidbody>().velocity = cañonIzquierdo.transform.forward * projectileSpeed;
+            proyectilDer.GetComponent<Rigidbody>().velocity = cañonDerecho.transform.forward * projectileSpeed;
+        }
+
+        // Esperar el tiempo de recarga antes de permitir otro disparo
+        yield return new WaitForSeconds(tiempoRecarga);
+        puedeDisparar = true;
     }
 }
