@@ -22,8 +22,9 @@ public class ProjectilePool : MonoBehaviour
         // Crear los 10 proyectiles y desactivarlos
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject proj = Instantiate(projectilePrefab);
+            GameObject proj = Instantiate(projectilePrefab,transform.position,Quaternion.Euler(0,0,-90));
             proj.SetActive(false);
+            
             projectilePool.Enqueue(proj);
         }
     }

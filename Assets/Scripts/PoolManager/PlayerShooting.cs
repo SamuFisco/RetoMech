@@ -3,17 +3,38 @@ using System.Collections;
 
 public class PlayerShooting : MonoBehaviour
 {
-    public Transform cañonIzquierdo;  // Punto de disparo del cañón izquierdo
-    public Transform cañonDerecho;   // Punto de disparo del cañón derecho
+    [Header("Configuración de Disparo")]
+    public Transform cañonIzquierdo;
+    public Transform cañonDerecho;
     public float projectileSpeed = 20f;
-    public float tiempoRecarga = 1f; // Tiempo entre disparos
+    public float tiempoRecarga = 1f;
     private bool puedeDisparar = true;
 
-    public Animator animator; // Referencia a la animación de disparo
+    [Header("Componentes")]
+    public Animator animator;
+    private ShootingSound shootingSound; // Sonido dentro del Player
+    private SoundDisparo soundDisparo;   // Sonido desde el SoundManager
+
+    void Start()
+    {
+        // Buscar el script `ShootingSound` en el Player
+        shootingSound = GetComponent<ShootingSound>();
+
+        // Buscar `SoundManager` en la escena
+        GameObject soundManager = GameObject.Find("SoundManager");
+        if (soundManager != null)
+        {
+            soundDisparo = soundManager.GetComponent<SoundDisparo>();
+        }
+        else
+        {
+            Debug.LogError("❌ No se encontró SoundManager en la escena. Asegúrate de crearlo.");
+        }
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && puedeDisparar)
+        if (Input.GetMouseButtonDown(0) && puedeDisparar) // Click Izquierdo para disparar
         {
             StartCoroutine(Disparar());
         }
@@ -23,10 +44,22 @@ public class PlayerShooting : MonoBehaviour
     {
         puedeDisparar = false;
 
-        // Activar animación de disparo
+        // **Activar animación de disparo**
         if (animator != null)
         {
             animator.SetTrigger("Disparar");
+        }
+
+        // **Reproducir sonido dentro del Player**
+        if (shootingSound != null)
+        {
+            shootingSound.PlayShootSound();
+        }
+
+        // **Reproducir sonido desde el SoundManager**
+        if (soundDisparo != null)
+        {
+            soundDisparo.PlayShootSound();
         }
 
         // Obtener proyectiles del pool
@@ -42,12 +75,15 @@ public class PlayerShooting : MonoBehaviour
             proyectilDer.transform.position = cañonDerecho.position;
             proyectilDer.transform.rotation = cañonDerecho.rotation;
 
-            // Asegurar que los proyectiles disparan hacia adelante
-            proyectilIzq.GetComponent<Rigidbody>().velocity = cañonIzquierdo.transform.forward * projectileSpeed;
-            proyectilDer.GetComponent<Rigidbody>().velocity = cañonDerecho.transform.forward * projectileSpeed;
+            proyectilIzq.GetComponent<Projectile>().direccionDisparo(transform.forward);
+            proyectilDer.GetComponent<Projectile>().direccionDisparo(transform.forward);
+
+            // Aplicar velocidad a los proyectiles
+            proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
+            proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
         }
 
-        // Esperar el tiempo de recarga antes de permitir otro disparo
+        // **Esperar el tiempo de recarga antes de permitir otro disparo**
         yield return new WaitForSeconds(tiempoRecarga);
         puedeDisparar = true;
     }

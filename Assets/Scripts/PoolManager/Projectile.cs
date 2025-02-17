@@ -4,7 +4,7 @@ public class Projectile : MonoBehaviour
 {
     public float lifeTime = 2f; // Tiempo antes de regresar al pool
     public float speed = 20f;
-
+    Vector3 _dir;
     void OnEnable()
     {
         Invoke("ReturnToPool", lifeTime);
@@ -12,9 +12,14 @@ public class Projectile : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        // Movimiento del proyectil en la dirección correcta
+        transform.position += (_dir * speed * Time.deltaTime);
     }
-
+    public void direccionDisparo(Vector3 dir)
+    {
+        _dir = dir;
+        
+    }
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
@@ -29,3 +34,4 @@ public class Projectile : MonoBehaviour
         ProjectilePool.instance.ReturnProjectile(gameObject);
     }
 }
+
