@@ -10,6 +10,10 @@ public class PlayerShooting : MonoBehaviour
     public float tiempoRecarga = 1f;
     private bool puedeDisparar = true;
 
+    [Header("Efectos de Partículas")]
+    public ParticleSystem particulasCañonIzq;
+    public ParticleSystem particulasCañonDer;
+
     [Header("Componentes")]
     public Animator animator;
     private ShootingSound shootingSound; // Sonido dentro del Player
@@ -62,6 +66,13 @@ public class PlayerShooting : MonoBehaviour
             soundDisparo.PlayShootSound();
         }
 
+        // **Disparar partículas en los cañones exactamente en el momento del disparo**
+        if (particulasCañonIzq != null && particulasCañonDer != null)
+        {
+            particulasCañonIzq.Play();
+            particulasCañonDer.Play();
+        }
+
         // Obtener proyectiles del pool
         GameObject proyectilIzq = ProjectilePool.instance.GetProjectile();
         GameObject proyectilDer = ProjectilePool.instance.GetProjectile();
@@ -75,16 +86,17 @@ public class PlayerShooting : MonoBehaviour
             proyectilDer.transform.position = cañonDerecho.position;
             proyectilDer.transform.rotation = cañonDerecho.rotation;
 
+            // Aplicar dirección y velocidad a los proyectiles
             proyectilIzq.GetComponent<Projectile>().direccionDisparo(transform.forward);
             proyectilDer.GetComponent<Projectile>().direccionDisparo(transform.forward);
 
-            // Aplicar velocidad a los proyectiles
             proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
             proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
         }
 
         // **Esperar el tiempo de recarga antes de permitir otro disparo**
         yield return new WaitForSeconds(tiempoRecarga);
+
         puedeDisparar = true;
     }
 }

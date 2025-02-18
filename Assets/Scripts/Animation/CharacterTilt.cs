@@ -1,52 +1,79 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CharacterIdleRotation : MonoBehaviour
+public class InclinacionPersonaje : MonoBehaviour
 {
-    [Header("Configuraci�n de Rotaci�n")]
-    public float rotationAmount = 5f; // Grados de rotaci�n en idle (izquierda-derecha)
-    public float rotationSpeed = 2f; // Velocidad de la rotaci�n en idle
-    public float movementThreshold = 0.1f; // M�nima velocidad para detectar movimiento
-    public float smoothness = 5f; // Suavidad de la transici�n entre idle y movimiento
+    [Header("Configuración de Inclinación")]
+    public float inclinacionFrontalMaxima = 10f; // Inclinación máxima adelante/atrás
+    public float inclinacionLateralMaxima = 10f; // Inclinación máxima a los lados
+    public float inclinacionIdle = 3f; // Oscilación en Idle (cuando está quieto)
+    public float velocidadInclinacion = 5f; // Velocidad de ajuste de la inclinación
+    public float umbralMovimiento = 0.1f; // Sensibilidad mínima para detectar movimiento
 
-    private CharacterController _controller;
-    private float idleRotationY = 0f;
+    private CharacterController _controlador;
+    private float velocidadAnterior = 0f; // Para detectar aceleración y frenado
+    private float direccionAnterior = 0f; // Para detectar cambios de dirección
 
     void Start()
     {
-        _controller = GetComponent<CharacterController>();
+        _controlador = GetComponent<CharacterController>();
 
-        if (_controller == null)
+        if (_controlador == null)
         {
-            Debug.LogError("No se encontr� CharacterController en " + gameObject.name);
+            Debug.LogError("No se encontró CharacterController en " + gameObject.name);
         }
     }
 
     void Update()
     {
-        ApplyIdleRotation();
+        AplicarInclinacion();
     }
 
     /// <summary>
-    /// Aplica una rotaci�n suave en Idle y la detiene cuando el personaje se mueve.
+    /// Aplica inclinaciones dinámicas según el movimiento del personaje.
     /// </summary>
-    private void ApplyIdleRotation()
+    private void AplicarInclinacion()
     {
-        // Obtener la velocidad en los ejes X y Z
-        float speed = new Vector3(_controller.velocity.x, 0, _controller.velocity.z).magnitude;
+        Vector3 velocidad = _controlador.velocity;
+        float velocidadActual = new Vector3(velocidad.x, 0, velocidad.z).magnitude;
+        float diferenciaVelocidad = velocidadActual - velocidadAnterior; // Detectar aceleración o frenado
+        float direccionActual = Mathf.Atan2(velocidad.x, velocidad.z) * Mathf.Rad2Deg; // Dirección del movimiento
 
-        if (speed > movementThreshold)
+        float inclinacionFrontalObjetivo = 0f;
+        float inclinacionLateralObjetivo = 0f;
+
+        // 🚀 Inclinación adelante/atrás según aceleración o frenado
+        if (velocidadActual > umbralMovimiento)
         {
-            // Si el personaje se mueve, detener la rotaci�n en Idle
-            idleRotationY = 0f;
-        }
-        else
-        {
-            // Si el personaje est� en Idle, rotarlo suavemente de un lado a otro
-            idleRotationY = Mathf.Sin(Time.time * rotationSpeed) * rotationAmount;
+            if (diferenciaVelocidad > 0.05f) // Acelerando -> Inclinar hacia atrás
+            {
+                inclinacionFrontalObjetivo = -inclinacionFrontalMaxima;
+            }
+            else if (diferenciaVelocidad < -0.05f) // Frenando -> Inclinar hacia adelante
+            {
+                inclinacionFrontalObjetivo = inclinacionFrontalMaxima;
+            }
         }
 
-        // Aplicar suavemente la rotaci�n
-        float smoothRotationY = Mathf.LerpAngle(transform.eulerAngles.y, transform.eulerAngles.y + idleRotationY, Time.deltaTime * smoothness);
-        transform.rotation = Quaternion.Euler(transform.eulerAngles.x, smoothRotationY, transform.eulerAngles.z);
+        // 🔄 Inclinación lateral en movimiento (al girar)
+        float nuevaDireccion = Mathf.Sign(velocidad.x); // Detecta si se mueve a la derecha o izquierda
+        if (velocidadActual > umbralMovimiento)
+        {
+            if (nuevaDireccion != direccionAnterior && Mathf.Abs(velocidad.x) > 0.05f)
+            {
+                inclinacionLateralObjetivo = -Mathf.Clamp(velocidad.x * inclinacionLateralMaxima, -inclinacionLateralMaxima, inclinacionLateralMaxima);
+            }
+        }
+        else // 🔄 Oscilación en Idle
+        {
+            inclinacionLateralObjetivo = Mathf.Sin(Time.time * 2) * inclinacionIdle;
+        }
+
+        // 🎯 Aplicar interpolación suave
+        float inclinacionFrontalSuave = Mathf.LerpAngle(transform.eulerAngles.x, inclinacionFrontalObjetivo, Time.deltaTime * velocidadInclinacion);
+        float inclinacionLateralSuave = Mathf.LerpAngle(transform.eulerAngles.z, inclinacionLateralObjetivo, Time.deltaTime * velocidadInclinacion);
+        transform.rotation = Quaternion.Euler(inclinacionFrontalSuave, transform.eulerAngles.y, inclinacionLateralSuave);
+
+        velocidadAnterior = velocidadActual; // Actualizar velocidad anterior
+        direccionAnterior = nuevaDireccion; // Actualizar dirección anterior
     }
 }
