@@ -18,6 +18,7 @@ public class PlayerShooting : MonoBehaviour
     public Animator animator;
     private ShootingSound shootingSound; // Sonido dentro del Player
     private SoundDisparo soundDisparo;   // Sonido desde el SoundManager
+    private TimerManager timerManager;   // Referencia al sistema de tiempo y puntuación
 
     void Start()
     {
@@ -33,6 +34,13 @@ public class PlayerShooting : MonoBehaviour
         else
         {
             Debug.LogError("❌ No se encontró SoundManager en la escena. Asegúrate de crearlo.");
+        }
+
+        // Buscar `TimerManager` en la escena
+        timerManager = FindObjectOfType<TimerManager>();
+        if (timerManager == null)
+        {
+            Debug.LogError("❌ No se encontró TimerManager en la escena.");
         }
     }
 
@@ -92,6 +100,23 @@ public class PlayerShooting : MonoBehaviour
 
             proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
             proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
+
+            // **Verificar si impactan en un enemigo, si no, restar puntos**
+            bool impactado = false;
+            Collider[] hits = Physics.OverlapSphere(proyectilIzq.transform.position, 0.5f);
+            foreach (Collider hit in hits)
+            {
+                if (hit.CompareTag("Enemy"))
+                {
+                    impactado = true;
+                    break;
+                }
+            }
+
+            if (!impactado && timerManager != null)
+            {
+                timerManager.AddScore(-2); // Restar puntos si el disparo falló
+            }
         }
 
         // **Esperar el tiempo de recarga antes de permitir otro disparo**
