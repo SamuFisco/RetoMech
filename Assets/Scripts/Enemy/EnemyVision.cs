@@ -1,20 +1,21 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 public class EnemyVision : MonoBehaviour
 {
     public Transform player; // Referencia al jugador
-    public float detectionRange = 10f; // Distancia de detecciÛn
-    public float fieldOfView = 60f; // ¡ngulo de visiÛn del enemigo
-    public LayerMask obstaclesMask; // Define quÈ capas bloquean la vista
+    public float detectionRange = 10f; // Distancia de detecci√≥n
+    public float fieldOfView = 60f; // √Ångulo de visi√≥n del enemigo
+    public LayerMask obstaclesMask; // Define qu√© capas bloquean la vista
     public GameObject gameOverUI; // Panel de Game Over
     private NavMeshAgent agent; // Agente de patrullaje (si aplica)
+    private bool restarGame = false; // Indica si el juego debe reiniciarse
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>(); // Obtiene el NavMeshAgent
-        gameOverUI.SetActive(false); // Asegura que el Game Over estÈ oculto al inicio
+        gameOverUI.SetActive(false); // Asegura que el Game Over est√© oculto al inicio
     }
 
     void Update()
@@ -26,11 +27,11 @@ public class EnemyVision : MonoBehaviour
     {
         if (player == null) return;
 
-        // Calcular direcciÛn hacia el jugador
+        // Calcular direcci√≥n hacia el jugador
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Verificar si el jugador est· dentro del campo de visiÛn y rango de detecciÛn
+        // Verificar si el jugador est√° dentro del campo de visi√≥n y rango de detecci√≥n
         if (Vector3.Angle(transform.forward, directionToPlayer) < fieldOfView / 2 && distanceToPlayer <= detectionRange)
         {
             // Realizar un Raycast desde el enemigo hacia el jugador
@@ -47,9 +48,38 @@ public class EnemyVision : MonoBehaviour
 
     void ActivarGameOver()
     {
-        Debug.Log("°El enemigo te ha detectado! Game Over.");
+        Debug.Log("¬°El enemigo te ha detectado! Game Over.");
         gameOverUI.SetActive(true); // Mostrar pantalla de Game Over
         Time.timeScale = 0; // Pausar el juego
+
+        // Desbloquear el cursor
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         if (agent != null) agent.isStopped = true; // Detener al enemigo si tiene NavMeshAgent
+    }
+
+    // ‚úÖ M√©todo que se activar√° desde un bot√≥n de la UI
+    public void ActivarReinicio()
+    {
+        Debug.Log("Reinicio activado, listo para reiniciar.");
+        restarGame = true; // Permite que CerrarMenu pueda reiniciar la escena
+    }
+
+    public void CerrarMenu()
+    {
+        if (restarGame) // Solo reinicia si antes se activ√≥ desde el bot√≥n de UI
+        {
+            Debug.Log("Reiniciando la escena...");
+            restarGame = false;
+            Time.timeScale = 1; // Reactiva el juego
+
+            // Bloquear nuevamente el cursor
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
+            // Reiniciar la escena actual
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }
