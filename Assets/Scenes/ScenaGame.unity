@@ -7966,8 +7966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd8578ef1d37c6d419e7a60bf51f6c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyVision: {fileID: 1315907330}
-  menuSceneName: ScenaGame
+  menuSceneName: ScenaMenu
 --- !u!1001 &1284363064
 PrefabInstance:
   m_ObjectHideFlags: 0
