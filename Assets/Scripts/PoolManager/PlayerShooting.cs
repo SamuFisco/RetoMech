@@ -16,16 +16,14 @@ public class PlayerShooting : MonoBehaviour
 
     [Header("Componentes")]
     public Animator animator;
-    private ShootingSound shootingSound; // Sonido dentro del Player
-    private SoundDisparo soundDisparo;   // Sonido desde el SoundManager
-    private TimerManager timerManager;   // Referencia al sistema de tiempo y puntuación
+    private ShootingSound shootingSound;
+    private SoundDisparo soundDisparo;
+    private TimerManager timerManager; // ✅ Usamos TimerManager para manejar la puntuación
 
     void Start()
     {
-        // Buscar el script `ShootingSound` en el Player
         shootingSound = GetComponent<ShootingSound>();
 
-        // Buscar `SoundManager` en la escena
         GameObject soundManager = GameObject.Find("SoundManager");
         if (soundManager != null)
         {
@@ -33,20 +31,26 @@ public class PlayerShooting : MonoBehaviour
         }
         else
         {
-            Debug.LogError("❌ No se encontró SoundManager en la escena. Asegúrate de crearlo.");
+            Debug.LogError("❌ No se encontró SoundManager en la escena.");
         }
 
-        // Buscar `TimerManager` en la escena
+        // 🔹 Buscar `TimerManager` en TODA la escena (porque está en un objeto vacío separado)
         timerManager = FindObjectOfType<TimerManager>();
+
         if (timerManager == null)
         {
-            Debug.LogError("❌ No se encontró TimerManager en la escena.");
+            Debug.LogError("❌ No se encontró TimerManager en la escena. Asegúrate de que existe y está activo.");
+        }
+        else
+        {
+            Debug.Log("✅ TimerManager encontrado correctamente.");
         }
     }
 
+
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && puedeDisparar) // Click Izquierdo para disparar
+        if (Input.GetMouseButtonDown(0) && puedeDisparar)
         {
             StartCoroutine(Disparar());
         }
@@ -56,72 +60,72 @@ public class PlayerShooting : MonoBehaviour
     {
         puedeDisparar = false;
 
-        // **Activar animación de disparo**
         if (animator != null)
         {
             animator.SetTrigger("Disparar");
         }
 
-        // **Reproducir sonido dentro del Player**
-        if (shootingSound != null)
+        shootingSound?.PlayShootSound();
+        soundDisparo?.PlayShootSound();
+
+        particulasCañonIzq?.Play();
+        particulasCañonDer?.Play();
+
+        GameObject proyectilIzq = ProjectilePool.instance?.GetProjectile();
+        GameObject proyectilDer = ProjectilePool.instance?.GetProjectile();
+
+        if (proyectilIzq == null || proyectilDer == null)
         {
-            shootingSound.PlayShootSound();
+            Debug.LogWarning("⚠ No hay proyectiles en el Pool.");
+            yield return new WaitForSeconds(tiempoRecarga);
+            puedeDisparar = true;
+            yield break;
         }
 
-        // **Reproducir sonido desde el SoundManager**
-        if (soundDisparo != null)
+        proyectilIzq.transform.position = cañonIzquierdo.position;
+        proyectilIzq.transform.rotation = cañonIzquierdo.rotation;
+
+        proyectilDer.transform.position = cañonDerecho.position;
+        proyectilDer.transform.rotation = cañonDerecho.rotation;
+
+        proyectilIzq.GetComponent<Projectile>().direccionDisparo(transform.forward);
+        proyectilDer.GetComponent<Projectile>().direccionDisparo(transform.forward);
+
+        proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
+        proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
+
+        // ✅ Verificar impactos en enemigos
+        bool impactado = false;
+
+        Collider[] hitsIzq = Physics.OverlapSphere(proyectilIzq.transform.position, 0.5f);
+        Collider[] hitsDer = Physics.OverlapSphere(proyectilDer.transform.position, 0.5f);
+
+        foreach (Collider hit in hitsIzq)
         {
-            soundDisparo.PlayShootSound();
-        }
-
-        // **Disparar partículas en los cañones exactamente en el momento del disparo**
-        if (particulasCañonIzq != null && particulasCañonDer != null)
-        {
-            particulasCañonIzq.Play();
-            particulasCañonDer.Play();
-        }
-
-        // Obtener proyectiles del pool
-        GameObject proyectilIzq = ProjectilePool.instance.GetProjectile();
-        GameObject proyectilDer = ProjectilePool.instance.GetProjectile();
-
-        if (proyectilIzq != null && proyectilDer != null)
-        {
-            // Posicionar los proyectiles en los cañones
-            proyectilIzq.transform.position = cañonIzquierdo.position;
-            proyectilIzq.transform.rotation = cañonIzquierdo.rotation;
-
-            proyectilDer.transform.position = cañonDerecho.position;
-            proyectilDer.transform.rotation = cañonDerecho.rotation;
-
-            // Aplicar dirección y velocidad a los proyectiles
-            proyectilIzq.GetComponent<Projectile>().direccionDisparo(transform.forward);
-            proyectilDer.GetComponent<Projectile>().direccionDisparo(transform.forward);
-
-            proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
-            proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
-
-            // **Verificar si impactan en un enemigo, si no, restar puntos**
-            bool impactado = false;
-            Collider[] hits = Physics.OverlapSphere(proyectilIzq.transform.position, 0.5f);
-            foreach (Collider hit in hits)
+            if (hit.CompareTag("Enemy"))
             {
-                if (hit.CompareTag("Enemy"))
-                {
-                    impactado = true;
-                    break;
-                }
-            }
-
-            if (!impactado && timerManager != null)
-            {
-                timerManager.AddScore(-2); // Restar puntos si el disparo falló
+                impactado = true;
+                timerManager?.AddScore(2); // ✅ SUMAR PUNTOS SI IMPACTA
+                break;
             }
         }
 
-        // **Esperar el tiempo de recarga antes de permitir otro disparo**
+        foreach (Collider hit in hitsDer)
+        {
+            if (hit.CompareTag("Enemy"))
+            {
+                impactado = true;
+                timerManager?.AddScore(2); // ✅ SUMAR PUNTOS SI IMPACTA
+                break;
+            }
+        }
+
+        if (!impactado)
+        {
+            timerManager?.AddScore(-2); // ❌ RESTAR PUNTOS SI FALLA
+        }
+
         yield return new WaitForSeconds(tiempoRecarga);
-
         puedeDisparar = true;
     }
 }

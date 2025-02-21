@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyNavMeshRandom2 : MonoBehaviour
+public class EnemyNavMeshRandon2 : MonoBehaviour
 {
     [Header("Movimiento")]
-    public float rangoMovimiento = 10f; // Distancia máxima de movimiento aleatorio
+    public Transform[] puntosPatrulla; // Array de 4 puntos de patrulla
+    public float stopThreshold = 0.5f; // Umbral para considerar que llegó al destino
     public float walkSpeed = 2f; // Velocidad al caminar
     public float runSpeed = 4f; // Velocidad al correr
-    public float stopThreshold = 0.5f; // Umbral para considerar que llegó al destino
 
     [Header("Animación")]
     public Animator animator;
 
     private NavMeshAgent agent;
+    private int indicePatrulla = 0; // Índice del punto actual de patrulla
 
     void Start()
     {
@@ -23,7 +24,14 @@ public class EnemyNavMeshRandom2 : MonoBehaviour
             animator = GetComponent<Animator>(); // Busca el Animator automáticamente
         }
 
-        MoverAUnPuntoAleatorio();
+        if (puntosPatrulla.Length > 0)
+        {
+            MoverAlSiguientePunto();
+        }
+        else
+        {
+            Debug.LogError("No hay puntos de patrulla asignados en el inspector.");
+        }
     }
 
     void Update()
@@ -33,7 +41,7 @@ public class EnemyNavMeshRandom2 : MonoBehaviour
 
         if (speed > 0.1f)
         {
-            if (speed > walkSpeed) animator.SetBool("IsRunning", true);
+            if (agent.speed > walkSpeed) animator.SetBool("IsRunning", true);
             else animator.SetBool("IsRunning", false);
 
             animator.SetBool("IsWalking", true);
@@ -44,46 +52,35 @@ public class EnemyNavMeshRandom2 : MonoBehaviour
             animator.SetBool("IsRunning", false);
         }
 
-        // Si el enemigo llegó a su destino, genera un nuevo punto de movimiento
+        // Si llegó al destino, pasar al siguiente punto de patrulla
         if (!agent.pathPending && agent.remainingDistance < stopThreshold)
         {
-            MoverAUnPuntoAleatorio();
+            MoverAlSiguientePunto();
         }
     }
 
-    void MoverAUnPuntoAleatorio()
+    void MoverAlSiguientePunto()
     {
-        Vector3 puntoDestino;
-        if (ObtenerPuntoAleatorio(transform.position, rangoMovimiento, out puntoDestino))
-        {
-            agent.SetDestination(puntoDestino);
+        if (puntosPatrulla.Length == 0)
+            return;
 
-            // Aleatoriamente decide si camina o corre
-            if (Random.value > 0.5f)
-            {
-                agent.speed = runSpeed;
-                animator.SetBool("IsRunning", true);
-            }
-            else
-            {
-                agent.speed = walkSpeed;
-                animator.SetBool("IsRunning", false);
-            }
+        // Seleccionar el siguiente punto en la lista
+        Transform puntoDestino = puntosPatrulla[indicePatrulla];
+        agent.SetDestination(puntoDestino.position);
+
+        // Cambiar la velocidad aleatoriamente (caminando o corriendo)
+        if (Random.value > 0.5f)
+        {
+            agent.speed = runSpeed;
+            animator.SetBool("IsRunning", true);
         }
-    }
-
-    bool ObtenerPuntoAleatorio(Vector3 origen, float rango, out Vector3 resultado)
-    {
-        Vector3 puntoRandom = origen + Random.insideUnitSphere * rango;
-        NavMeshHit hit;
-
-        if (NavMesh.SamplePosition(puntoRandom, out hit, rango, NavMesh.AllAreas))
+        else
         {
-            resultado = hit.position;
-            return true;
+            agent.speed = walkSpeed;
+            animator.SetBool("IsRunning", false);
         }
 
-        resultado = Vector3.zero;
-        return false;
+        // Mover al siguiente punto en la lista circularmente
+        indicePatrulla = (indicePatrulla + 1) % puntosPatrulla.Length;
     }
 }

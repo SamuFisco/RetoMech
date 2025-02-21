@@ -3,19 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class GameOverUI : MonoBehaviour
 {
-    public string menuSceneName = "Menu"; // Nombre de la escena del menú
+    public string sceneGame = "GameScene"; // Nombre de la escena de juego
 
-    // Método para reiniciar la escena actual desde el inicio
+    // Método público para reiniciar la escena correctamente
     public void ReiniciarJuego()
     {
-        Time.timeScale = 1; // Restaurar el tiempo de juego
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Recarga la escena actual
-    }
-
-    // Método para ir al menú principal
-    public void IrAlMenu()
-    {
-        Time.timeScale = 1; // Restaurar el tiempo en caso de que esté pausado
-        SceneManager.LoadScene(menuSceneName); // Cargar la escena del menú principal
+        Time.timeScale = 1; // Asegurar que el tiempo esté activo
+        SceneManager.LoadScene(sceneGame); // Cargar la escena de juego directamente
     }
 }
