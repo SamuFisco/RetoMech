@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
 
-public class InclinacionPersonaje : MonoBehaviour
+public class CharacterTilt : MonoBehaviour
 {
     [Header("Configuración de Inclinación")]
     public float inclinacionFrontalMaxima = 10f; // Inclinación máxima adelante/atrás
     public float inclinacionLateralMaxima = 10f; // Inclinación máxima a los lados
-    public float inclinacionIdle = 3f; // Oscilación en Idle (cuando está quieto)
+    public float inclinacionIdle = 3f; // Oscilación en Idle
     public float velocidadInclinacion = 5f; // Velocidad de ajuste de la inclinación
     public float umbralMovimiento = 0.1f; // Sensibilidad mínima para detectar movimiento
 
     private CharacterController _controlador;
     private float velocidadAnterior = 0f; // Para detectar aceleración y frenado
-    private float direccionAnterior = 0f; // Para detectar cambios de dirección
 
     void Start()
     {
@@ -35,9 +34,7 @@ public class InclinacionPersonaje : MonoBehaviour
     {
         Vector3 velocidad = _controlador.velocity;
         float velocidadActual = new Vector3(velocidad.x, 0, velocidad.z).magnitude;
-        float diferenciaVelocidad = velocidadActual - velocidadAnterior; // Detectar aceleración o frenado
-        float direccionActual = Mathf.Atan2(velocidad.x, velocidad.z) * Mathf.Rad2Deg; // Dirección del movimiento
-
+        float diferenciaVelocidad = velocidadActual - velocidadAnterior;
         float inclinacionFrontalObjetivo = 0f;
         float inclinacionLateralObjetivo = 0f;
 
@@ -54,16 +51,16 @@ public class InclinacionPersonaje : MonoBehaviour
             }
         }
 
-        // 🔄 Inclinación lateral en movimiento (al girar)
-        float nuevaDireccion = Mathf.Sign(velocidad.x); // Detecta si se mueve a la derecha o izquierda
-        if (velocidadActual > umbralMovimiento)
+        // 🔄 Inclinación lateral cuando el jugador gira Y se mueve
+        float inputHorizontal = Input.GetAxis("Horizontal");
+        if (velocidadActual > umbralMovimiento) // Solo inclinar si se está moviendo
         {
-            if (nuevaDireccion != direccionAnterior && Mathf.Abs(velocidad.x) > 0.05f)
+            if (Mathf.Abs(inputHorizontal) > 0.1f) // Detectar si se está girando
             {
-                inclinacionLateralObjetivo = -Mathf.Clamp(velocidad.x * inclinacionLateralMaxima, -inclinacionLateralMaxima, inclinacionLateralMaxima);
+                inclinacionLateralObjetivo = -inputHorizontal * inclinacionLateralMaxima;
             }
         }
-        else // 🔄 Oscilación en Idle
+        else // 🔄 Oscilación en Idle cuando está quieto
         {
             inclinacionLateralObjetivo = Mathf.Sin(Time.time * 2) * inclinacionIdle;
         }
@@ -74,6 +71,6 @@ public class InclinacionPersonaje : MonoBehaviour
         transform.rotation = Quaternion.Euler(inclinacionFrontalSuave, transform.eulerAngles.y, inclinacionLateralSuave);
 
         velocidadAnterior = velocidadActual; // Actualizar velocidad anterior
-        direccionAnterior = nuevaDireccion; // Actualizar dirección anterior
     }
 }
+
