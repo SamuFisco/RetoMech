@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using StarterAssets;
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerShooting : MonoBehaviour
     public float projectileSpeed = 20f;
     public float tiempoRecarga = 1f;
     private bool puedeDisparar = true;
+    private StarterAssetsInputs input;
 
     [Header("Efectos de Partículas")]
     public ParticleSystem particulasCañonIzq;
@@ -18,10 +20,11 @@ public class PlayerShooting : MonoBehaviour
     public Animator animator;
     private ShootingSound shootingSound;
     private SoundDisparo soundDisparo;
-    private TimerManager timerManager; // ✅ Usamos TimerManager para manejar la puntuación
+    private TimerManager timerManager; // Se utiliza para actualizar la puntuación
 
     void Start()
     {
+        input = GetComponent<StarterAssetsInputs>();
         shootingSound = GetComponent<ShootingSound>();
 
         GameObject soundManager = GameObject.Find("SoundManager");
@@ -34,9 +37,8 @@ public class PlayerShooting : MonoBehaviour
             Debug.LogError("❌ No se encontró SoundManager en la escena.");
         }
 
-        // 🔹 Buscar `TimerManager` en TODA la escena (porque está en un objeto vacío separado)
+        // Buscar TimerManager en toda la escena (asegúrate de tenerlo en un GameObject activo)
         timerManager = FindObjectOfType<TimerManager>();
-
         if (timerManager == null)
         {
             Debug.LogError("❌ No se encontró TimerManager en la escena. Asegúrate de que existe y está activo.");
@@ -47,12 +49,12 @@ public class PlayerShooting : MonoBehaviour
         }
     }
 
-
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && puedeDisparar)
+        if (input.disparo && puedeDisparar)
         {
             StartCoroutine(Disparar());
+            input.disparo = false;
         }
     }
 
@@ -82,6 +84,7 @@ public class PlayerShooting : MonoBehaviour
             yield break;
         }
 
+        // Posicionar y orientar los proyectiles en los cañones correspondientes
         proyectilIzq.transform.position = cañonIzquierdo.position;
         proyectilIzq.transform.rotation = cañonIzquierdo.rotation;
 
@@ -94,35 +97,40 @@ public class PlayerShooting : MonoBehaviour
         proyectilIzq.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
         proyectilDer.GetComponent<Rigidbody>().velocity = transform.forward * projectileSpeed;
 
-        // ✅ Verificar impactos en enemigos
+        // Verificar impactos en enemigos usando un OverlapSphere para cada proyectil
         bool impactado = false;
 
         Collider[] hitsIzq = Physics.OverlapSphere(proyectilIzq.transform.position, 0.5f);
         Collider[] hitsDer = Physics.OverlapSphere(proyectilDer.transform.position, 0.5f);
 
+        // Si alguno de los proyectiles impacta a un objeto con tag "Enemy", se considera un disparo exitoso.
         foreach (Collider hit in hitsIzq)
         {
             if (hit.CompareTag("Enemy"))
             {
                 impactado = true;
-                timerManager?.AddScore(2); // ✅ SUMAR PUNTOS SI IMPACTA
-                break;
-            }
-        }
-
-        foreach (Collider hit in hitsDer)
-        {
-            if (hit.CompareTag("Enemy"))
-            {
-                impactado = true;
-                timerManager?.AddScore(2); // ✅ SUMAR PUNTOS SI IMPACTA
+                timerManager?.AddScore(2); // Sumar 2 puntos por impactar
                 break;
             }
         }
 
         if (!impactado)
         {
-            timerManager?.AddScore(-2); // ❌ RESTAR PUNTOS SI FALLA
+            foreach (Collider hit in hitsDer)
+            {
+                if (hit.CompareTag("Enemy"))
+                {
+                    impactado = true;
+                    timerManager?.AddScore(2); // Sumar 2 puntos por impactar
+                    break;
+                }
+            }
+        }
+
+        // Si ninguno de los proyectiles impacta, se resta 2 puntos (por cada disparo realizado)
+        if (!impactado)
+        {
+            timerManager?.AddScore(-2);
         }
 
         yield return new WaitForSeconds(tiempoRecarga);

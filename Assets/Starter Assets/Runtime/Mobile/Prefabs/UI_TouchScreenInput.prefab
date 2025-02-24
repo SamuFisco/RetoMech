@@ -49,8 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: 6f80c07efbcffac4380910b5aac93c8d, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: ccd45339dc8ff154fbbe578856089eaf,
-    type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: ccd45339dc8ff154fbbe578856089eaf, type: 3}
   m_SortingOrder: 0
 --- !u!114 &7140694399045626294
 MonoBehaviour:
@@ -65,7 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveMagnitudeMultiplier: 1
-  LookMagnitudeMultiplier: 80
+  LookMagnitudeMultiplier: 0.5
   InvertLookY: 1
   MoveEvent:
     m_PersistentCalls:

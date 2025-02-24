@@ -12,7 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
-
+		public bool disparo;
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -21,6 +21,10 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
+		public void OnDisparo(InputValue value)
+		{
+			DisparoInput(value.isPressed);
+		}
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
@@ -45,7 +49,10 @@ namespace StarterAssets
 		}
 #endif
 
-
+		public void DisparoInput(bool isPressed)
+		{
+			disparo = isPressed;
+		}
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;

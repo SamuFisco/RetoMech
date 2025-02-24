@@ -16,10 +16,10 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="ButtonJump" class="touchscreen-button">
-            <ui:VisualElement name="ButtonImage" class="button-icon" style="flex-grow: 1;" />
+            <ui:VisualElement name="ButtonImage" class="button-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Image/Disparo.png?fileID=21300000&amp;guid=1f92ae7774832a0479faade90060f11a&amp;type=3#Disparo&quot;);" />
         </ui:VisualElement>
         <ui:VisualElement name="ButtonSprint" class="touchscreen-button">
-            <ui:VisualElement name="ButtonImage" class="button-icon" style="flex-grow: 1;" />
+            <ui:VisualElement name="ButtonImage" class="button-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Image/SPEED.png?fileID=21300000&amp;guid=c68c4879c4b36e64299e26ac3b8c81bd&amp;type=3#SPEED&quot;); width: 76px; height: 66px;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

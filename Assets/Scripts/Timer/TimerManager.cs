@@ -123,4 +123,12 @@ public class TimerManager : MonoBehaviour
         UpdateScoreUI();
         Debug.Log("🏆 Puntos finales: " + playerScore);
     }
+
+    // Nuevo método para agregar tiempo (por ejemplo, un power up que sume 60 segundos)
+    public void AddTime(float extraSeconds)
+    {
+        timeRemaining += extraSeconds;
+        UpdateTimerUI();
+        Debug.Log("Tiempo agregado: " + extraSeconds + " segundos. Tiempo restante: " + timeRemaining);
+    }
 }
