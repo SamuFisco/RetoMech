@@ -9,12 +9,12 @@ public class Controles : MonoBehaviour
 
     private bool estaVisible = false; // ✅ Estado del panel
 
-    void Start()
+
+    private void Awake()
     {
         // Asegurar que el panel inicie en la posición oculta
         panel.anchoredPosition = posicionInicial;
     }
-
     // 🔥 Método para mostrar el panel de controles
     public void MostrarControles()
     {

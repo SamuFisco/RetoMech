@@ -34,6 +34,7 @@ public class GameOverUI : MonoBehaviour
     {
         Time.timeScale = 1; // Asegurar que el tiempo está activo
         SceneManager.LoadScene(sceneGame);
+        
     }
 
     // ✅ Volver al menú principal

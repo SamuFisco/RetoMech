@@ -1,3 +1,4 @@
+using StarterAssets;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -15,8 +16,8 @@ public class MenuController2 : MonoBehaviour
     void Start()
     {
         menu.anchoredPosition = new Vector2(menu.anchoredPosition.x, posicionInicialY);
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        /*Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;*/
     }
 
     void Update()
@@ -35,10 +36,10 @@ public class MenuController2 : MonoBehaviour
         LeanTween.moveY(menu, destinoY, duracionMovimiento).setEase(LeanTweenType.easeOutQuad).setIgnoreTimeScale(true);
 
         Time.timeScale = menuActivo ? 0 : 1;
-
+        FindObjectOfType<StarterAssetsInputs>().SetCursorState(!menuActivo);
         // Activar el cursor y desbloquearlo cuando el menú está activo
-        Cursor.visible = menuActivo;
-        Cursor.lockState = menuActivo ? CursorLockMode.None : CursorLockMode.Locked;
+        /*Cursor.visible = menuActivo;
+        Cursor.lockState = menuActivo ? CursorLockMode.None : CursorLockMode.Locked;*/
     }
 
     public void CerrarMenu()
@@ -48,9 +49,9 @@ public class MenuController2 : MonoBehaviour
             menuActivo = false;
             LeanTween.moveY(menu, posicionInicialY, duracionMovimiento).setEase(LeanTweenType.easeOutQuad);
             Time.timeScale = 1;
-
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            FindObjectOfType<StarterAssetsInputs>().SetCursorState(true);
+            /*Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;*/
         }
     }
 

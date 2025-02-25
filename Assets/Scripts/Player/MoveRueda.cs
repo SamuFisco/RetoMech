@@ -71,14 +71,12 @@ public class MoveRueda : MonoBehaviour
         {
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
-    }
-
-    private void Start()
-    {
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
         _controller = GetComponent<CharacterController>();
         _input = GetComponent<StarterAssetsInputs>();
         _playerInput = GetComponent<PlayerInput>();
+        //_input.SetCursorState(true);
+        Time.timeScale = 1.0f;
     }
 
     private void Update()

@@ -13,8 +13,7 @@ public class BackgroundZoom : MonoBehaviour
 
     private Vector3 originalPosition;
     private Vector3 originalScale;
-
-    void Start()
+    private void Awake()
     {
         // Guarda la posición y escala inicial de la imagen
         originalPosition = backgroundImage.rectTransform.anchoredPosition;
@@ -23,7 +22,6 @@ public class BackgroundZoom : MonoBehaviour
         // Asegura que la imagen esté invisible al inicio
         backgroundImage.gameObject.SetActive(false);
     }
-
     public void PlayAnimation()
     {
         // Activa la imagen de fondo
