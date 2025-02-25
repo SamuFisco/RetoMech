@@ -1,30 +1,62 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PowerUpTime : MonoBehaviour
 {
-    // Tiempo extra en segundos; 60 segundos equivale a 1 minuto
-    public float extraTime = 60f;
+    public float extraTime = 60f; // Tiempo extra en segundos (1 minuto)
+    public AudioClip powerUpSound; // 🎵 Sonido a reproducir
+    private AudioSource audioSource;
 
-    // Se ejecuta cuando otro collider entra en contacto (aseg�rate de tener Is Trigger activado)
+    private void Start()
+    {
+        // Buscar o añadir un AudioSource automáticamente
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // 🔥 Iniciar el efecto de "saltito" con LeanTween
+        StartJumping();
+    }
+
+    private void StartJumping()
+    {
+        float originalY = transform.position.y;
+
+        // 🔹 Movimiento en 3D: solo afectamos la posición en Y
+        LeanTween.moveY(gameObject, originalY + 0.3f, 0.5f)
+                 .setEaseInOutSine() // Suaviza el movimiento
+                 .setLoopPingPong(); // Hace que el movimiento sea continuo
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Verifica si el objeto que colisiona es el jugador (con la etiqueta "Player")
         if (other.CompareTag("Player"))
         {
-            // Busca el TimerManager en la escena
+            Debug.Log("✅ PowerUpTime activado: +1 minuto añadido.");
+
             TimerManager timerManager = FindObjectOfType<TimerManager>();
             if (timerManager != null)
             {
-                // Suma el tiempo extra al temporizador
                 timerManager.timeRemaining += extraTime;
-                Debug.Log("PowerUpTime activado: +1 minuto a�adido.");
             }
             else
             {
-                Debug.LogWarning("No se encontr� TimerManager en la escena.");
+                Debug.LogWarning("⚠ No se encontró TimerManager en la escena.");
             }
-            // Destruye el power up despu�s de recogerlo
-            Destroy(gameObject);
+
+            // 🔊 Reproducir sonido antes de destruir el Power-Up
+            if (powerUpSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(powerUpSound);
+                Debug.Log("🔊 Reproduciendo sonido del Power-Up.");
+                Destroy(gameObject, powerUpSound.length); // ⏳ Esperar a que termine el sonido antes de destruir
+            }
+            else
+            {
+                Debug.LogWarning("⚠ No hay sonido asignado o AudioSource es NULL.");
+                Destroy(gameObject);
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class PowerUpPoints : MonoBehaviour
+public class PowerUpPuntos : MonoBehaviour
 {
-    public int pointsToAdd = 2;
+    public int pointsToAdd = 2; // Puntos que se suman al recoger el power-up
     public AudioClip powerUpSound; // 🎵 Sonido a reproducir
     private AudioSource audioSource;
 
@@ -14,26 +14,39 @@ public class PowerUpPoints : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+
+        // 🔥 Iniciar el efecto de "saltito" con LeanTween
+        StartJumping();
+    }
+
+    private void StartJumping()
+    {
+        float originalY = transform.position.y;
+
+        // 🔹 Movimiento en 3D: solo afectamos la posición en Y
+        LeanTween.moveY(gameObject, originalY + 0.3f, 0.5f)
+                 .setEaseInOutSine() // Suaviza el movimiento
+                 .setLoopPingPong(); // Hace que el movimiento sea continuo
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("✅ Power-Up recogido por el jugador.");
+            Debug.Log("✅ PowerUpPuntos recogido: +2 puntos añadidos.");
 
+            // Agregar puntos al TimerManager
             TimerManager timerManager = FindObjectOfType<TimerManager>();
             if (timerManager != null)
             {
                 timerManager.AddScore(pointsToAdd);
-                Debug.Log("✅ Puntos añadidos: " + pointsToAdd);
             }
             else
             {
                 Debug.LogWarning("⚠ No se encontró TimerManager en la escena.");
             }
 
-            // 🔊 Reproducir el sonido antes de destruir el Power-Up
+            // 🔊 Reproducir sonido antes de destruir el Power-Up
             if (powerUpSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(powerUpSound);
@@ -43,7 +56,7 @@ public class PowerUpPoints : MonoBehaviour
             else
             {
                 Debug.LogWarning("⚠ No hay sonido asignado o AudioSource es NULL.");
-                Destroy(gameObject); // Si no hay sonido, destruir de inmediato
+                Destroy(gameObject); // Si no hay sonido, destruir inmediatamente
             }
         }
     }
