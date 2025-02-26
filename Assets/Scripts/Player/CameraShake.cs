@@ -2,42 +2,45 @@
 
 public class ShakeEffect : MonoBehaviour
 {
-    public GameObject target; // El objeto a sacudir (Debe ser la Cámara)
-    public float intensity = 1f; // Intensidad del sacudido
-    public float duration = 0.5f; // Duración total
+    public Transform rootVision; // Referencia al objeto RootVision dentro del jugador
+    public float intensity = 1f; // Intensidad del efecto de sacudida
+    public float duration = 0.5f; // Duración del efecto
 
-    private Vector3 originalPosition;
+    private Vector3 originalLocalPosition; // Almacena la posición inicial del objeto
 
     private void Start()
     {
-        if (target == null)
+        if (rootVision == null)
         {
-            target = Camera.main.gameObject; // Asigna la cámara automáticamente si no está definida
+            // Busca dinámicamente el objeto RootVision dentro del jugador
+            rootVision = transform.Find("RootVision");
+
+            // Si no se encuentra RootVision, muestra un mensaje de error y detiene la ejecución
+            if (rootVision == null)
+            {
+                Debug.LogError("RootVision no encontrado como hijo del Player.");
+                return;
+            }
         }
 
-        originalPosition = target.transform.position;
+        // Guarda la posición local original del objeto
+        originalLocalPosition = rootVision.localPosition;
     }
 
     public void ShakePosition()
     {
-        if (target == null) return;
+        // Si rootVision no está asignado, se detiene la ejecución
+        if (rootVision == null) return;
 
-        LeanTween.cancel(target); // Cancela cualquier animación previa para evitar acumulación
+        // Cancela cualquier animación previa en el objeto para evitar acumulaciones
+        LeanTween.cancel(rootVision.gameObject);
 
-        LeanTween.value(gameObject, 0f, intensity, duration)
-            .setOnUpdate((float value) => {
-                // Generar desplazamiento aleatorio en los ejes X e Y
-                Vector3 randomOffset = new Vector3(
-                    Random.Range(-value, value),
-                    Random.Range(-value, value),
-                    0f
-                );
-                target.transform.position = originalPosition + randomOffset;
-            })
-            .setEase(LeanTweenType.easeShake)
+        // Aplica un efecto de sacudida moviendo la posición local con un desplazamiento aleatorio
+        LeanTween.moveLocal(rootVision.gameObject, originalLocalPosition + (Vector3)Random.insideUnitCircle * intensity, duration)
+            .setEase(LeanTweenType.punch) // Usa un tipo de animación de golpe para el efecto
             .setOnComplete(() => {
-                // Restaurar la posición original
-                target.transform.position = originalPosition;
+                // Al finalizar la animación, restaura la posición original del objeto
+                rootVision.localPosition = originalLocalPosition;
             });
     }
 }

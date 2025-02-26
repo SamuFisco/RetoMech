@@ -40,10 +40,10 @@ public class MoveRueda : MonoBehaviour
     [Header("Animación rueda e inclinación")]
     [SerializeField] Transform rueda;
     [SerializeField] float rotacion = 5.0f;
-    [SerializeField] float maxTiltAngle = 15f; // Ángulo máximo de inclinación
-    [SerializeField] float tiltSmoothness = 5f; // Suavidad de la inclinación
+    [SerializeField] float maxTiltAngle = 15f; //Ángulo máximo de inclinación
+    [SerializeField] float tiltSmoothness = 5f; //Suavidad de la inclinación
 
-    // Variables internas
+    //Variables internas
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
     private float _speed;
@@ -82,7 +82,7 @@ public class MoveRueda : MonoBehaviour
     private void Update()
     {
         AnimRueda();
-        Move();      // Se aplica la lógica de velocidad (incluyendo sprint)
+        Move();      //Se aplica la lógica de velocidad (incluyendo sprint)
         FallOut();
         ApplyTilt();
     }
@@ -93,7 +93,7 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el personaje está en el suelo.
+    ///Verifica si el personaje está en el suelo.
     /// </summary>
     private void GroundedCheck()
     {
@@ -102,7 +102,7 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Aplica la rotación de la cámara según el input del jugador.
+    ///Aplica la rotación de la cámara según el input del jugador.
     /// </summary>
     private void CameraRotation()
     {
@@ -120,7 +120,7 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Aplica la inclinación del robot según la velocidad de movimiento.
+    ///Aplica la inclinación del robot según la velocidad de movimiento.
     /// </summary>
     private void ApplyTilt()
     {
@@ -133,7 +133,7 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Hace que la rueda gire en base al movimiento del personaje.
+    ///Hace que la rueda gire en base al movimiento del personaje.
     /// </summary>
     private void AnimRueda()
     {
@@ -145,10 +145,10 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Controla el movimiento del personaje aplicando la lógica de velocidad:
-    /// - Selecciona la velocidad objetivo (normal o sprint).
-    /// - Interpola suavemente entre la velocidad actual y la velocidad objetivo.
-    /// - Aplica el movimiento y la rotación al CharacterController.
+    ///Controla el movimiento del personaje aplicando la lógica de velocidad:
+    ///Selecciona la velocidad objetivo (normal o sprint).
+    ///Interpola suavemente entre la velocidad actual y la velocidad objetivo.
+    ///Aplica el movimiento y la rotación al CharacterController.
     /// </summary>
     private void Move()
     {
@@ -173,14 +173,14 @@ public class MoveRueda : MonoBehaviour
             _speed = targetSpeed;
         }
 
-        // Actualiza el blend de animación según la velocidad.
+        //Actualiza el blend de animación según la velocidad.
         _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
         if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-        // Calcula la dirección de movimiento a partir del input.
+        //Calcula la dirección de movimiento a partir del input.
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-        // Si hay input de movimiento, calcula la rotación objetivo.
+        //Si hay input de movimiento, calcula la rotación objetivo.
         if (_input.move != Vector2.zero)
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.transform.eulerAngles.y;
@@ -188,13 +188,13 @@ public class MoveRueda : MonoBehaviour
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
         }
 
-        // Aplica el movimiento al CharacterController.
+        //Aplica el movimiento al CharacterController.
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
         _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
     }
 
     /// <summary>
-    /// Aplica la gravedad incrementando la velocidad vertical hasta alcanzar un límite terminal.
+    ///Aplica la gravedad incrementando la velocidad vertical hasta alcanzar un límite terminal.
     /// </summary>
     private void FallOut()
     {
@@ -205,7 +205,7 @@ public class MoveRueda : MonoBehaviour
     }
 
     /// <summary>
-    /// Restringe un ángulo entre un mínimo y un máximo.
+    ///Restringe un ángulo entre un mínimo y un máximo.
     /// </summary>
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {

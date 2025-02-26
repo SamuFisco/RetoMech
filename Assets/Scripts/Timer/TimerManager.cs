@@ -8,7 +8,7 @@ public class TimerManager : MonoBehaviour
     public TextMeshProUGUI timerText; // Texto de UI para mostrar el tiempo
     public TextMeshProUGUI scoreText; // Texto de UI para la puntuación
     public TextMeshProUGUI enemyText; // Texto de UI para la cantidad de enemigos restantes
-    public GameObject winCanvas; // ✅ Arrastra el Canvas de victoria en el Inspector
+    public GameObject winCanvas; // Arrastra el Canvas de victoria en el Inspector
 
     public int playerScore = 0; // Puntaje del jugador
     private bool isGameOver = false; // Evitar múltiples llamadas a GameOver
@@ -20,7 +20,7 @@ public class TimerManager : MonoBehaviour
         enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
         UpdateEnemyUI();
 
-        // ✅ Asegurar que el Canvas de Victoria esté desactivado al inicio
+        // Asegurar que el Canvas de Victoria esté desactivado al inicio
         if (winCanvas != null)
             winCanvas.SetActive(false);
         else
@@ -75,7 +75,7 @@ public class TimerManager : MonoBehaviour
 
         if (enemyCount <= 0) // Si no quedan enemigos, el jugador gana
         {
-            StartCoroutine(WinGameCoroutine()); // ✅ Ahora usamos una corrutina con retraso
+            StartCoroutine(WinGameCoroutine()); // Ahora usamos una corrutina con retraso
         }
     }
 
@@ -89,20 +89,20 @@ public class TimerManager : MonoBehaviour
             CalculateFinalScore();
             UpdateScoreUI();
 
-            // ✅ Guardar puntaje final en PlayerPrefs para usarlo en la UI de victoria
+            // Guardar puntaje final en PlayerPrefs para usarlo en la UI de victoria
             PlayerPrefs.SetInt("FinalScore", playerScore);
             PlayerPrefs.Save();
 
-            yield return new WaitForSeconds(2f); // ✅ Espera 2 segundos antes de mostrar el Canvas
+            yield return new WaitForSeconds(2f); // Espera 2 segundos antes de mostrar el Canvas
 
             if (winCanvas != null)
             {
                 winCanvas.SetActive(true);
-                Time.timeScale = 0f; // ✅ Pausar el juego al mostrar el Canvas
+                Time.timeScale = 0f; // Pausar el juego al mostrar el Canvas
             }
             else
             {
-                Debug.LogError("⚠ WinCanvas no asignado en el Inspector.");
+                Debug.LogError("WinCanvas no asignado en el Inspector.");
             }
         }
     }
@@ -112,7 +112,7 @@ public class TimerManager : MonoBehaviour
         if (!isGameOver)
         {
             isGameOver = true;
-            Debug.Log("⏳ Tiempo agotado. Fin del juego.");
+            Debug.Log("Tiempo agotado. Fin del juego.");
         }
     }
 
@@ -121,7 +121,7 @@ public class TimerManager : MonoBehaviour
         int bonusTimePoints = Mathf.FloorToInt(timeRemaining) * 10;
         playerScore += bonusTimePoints;
         UpdateScoreUI();
-        Debug.Log("🏆 Puntos finales: " + playerScore);
+        Debug.Log("Puntos finales: " + playerScore);
     }
 
     // Nuevo método para agregar tiempo (por ejemplo, un power up que sume 60 segundos)
