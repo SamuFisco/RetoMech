@@ -21,6 +21,7 @@ public class PlayerShooting : MonoBehaviour
     private ShootingSound shootingSound;
     private SoundDisparo soundDisparo;
     private TimerManager timerManager; // Se utiliza para actualizar la puntuación
+    private ShakeEffect shakeEffect; // 🔥 Nuevo: Para el temblor de cámara con LeanTween
 
     void Start()
     {
@@ -47,6 +48,13 @@ public class PlayerShooting : MonoBehaviour
         {
             Debug.Log("✅ TimerManager encontrado correctamente.");
         }
+
+        // 🔥 Nuevo: Buscar ShakeEffect en la escena
+        shakeEffect = FindObjectOfType<ShakeEffect>();
+        if (shakeEffect == null)
+        {
+            Debug.LogError("❌ No se encontró ShakeEffect en la escena. Asegúrate de agregarlo a un objeto con la cámara.");
+        }
     }
 
     void Update()
@@ -72,6 +80,8 @@ public class PlayerShooting : MonoBehaviour
 
         particulasCañonIzq?.Play();
         particulasCañonDer?.Play();
+
+        shakeEffect?.ShakePosition(); // 🔥 Nuevo: Activar el temblor de cámara con LeanTween
 
         GameObject proyectilIzq = ProjectilePool.instance?.GetProjectile();
         GameObject proyectilDer = ProjectilePool.instance?.GetProjectile();
