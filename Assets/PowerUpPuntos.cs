@@ -8,11 +8,11 @@ public class PowerUpPuntos : MonoBehaviour
 
     private void Start()
     {
-        // Buscar o añadir un AudioSource automáticamente
+        //Buscar o añadir un AudioSource automáticamente
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
+           audioSource = gameObject.AddComponent<AudioSource>();
         }
 
         //Iniciar el efecto de "saltito" con LeanTween
@@ -46,11 +46,11 @@ public class PowerUpPuntos : MonoBehaviour
                 Debug.LogWarning("No se encontró TimerManager en la escena.");
             }
 
-            // 🔊 Reproducir sonido antes de destruir el Power-Up
+            // Reproducir sonido antes de destruir el Power-Up
             if (powerUpSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(powerUpSound);
-                Debug.Log("🔊 Reproduciendo sonido del Power-Up.");
+               Debug.Log("🔊 Reproduciendo sonido del Power-Up.");
                 Destroy(gameObject, powerUpSound.length); // Esperar a que termine el sonido antes de destruir
             }
             else

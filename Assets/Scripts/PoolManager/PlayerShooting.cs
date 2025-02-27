@@ -21,7 +21,7 @@ public class PlayerShooting : MonoBehaviour
     private ShootingSound shootingSound;
     private SoundDisparo soundDisparo;
     private TimerManager timerManager; // Se utiliza para actualizar la puntuación
-    private ShakeEffect shakeEffect; // 🔥 Nuevo: Para el temblor de cámara con LeanTween
+    private ShakeEffect shakeEffect; //Nuevo: Para el temblor de cámara con LeanTween
 
     void Start()
     {
@@ -35,25 +35,25 @@ public class PlayerShooting : MonoBehaviour
         }
         else
         {
-            Debug.LogError("❌ No se encontró SoundManager en la escena.");
+            Debug.LogError("No se encontró SoundManager en la escena.");
         }
 
         // Buscar TimerManager en toda la escena (asegúrate de tenerlo en un GameObject activo)
         timerManager = FindObjectOfType<TimerManager>();
         if (timerManager == null)
         {
-            Debug.LogError("❌ No se encontró TimerManager en la escena. Asegúrate de que existe y está activo.");
+            Debug.LogError("No se encontró TimerManager en la escena. Asegúrate de que existe y está activo.");
         }
         else
         {
-            Debug.Log("✅ TimerManager encontrado correctamente.");
+            Debug.Log("TimerManager encontrado correctamente.");
         }
 
-        // 🔥 Nuevo: Buscar ShakeEffect en la escena
+        //Nuevo: Buscar ShakeEffect en la escena
         shakeEffect = FindObjectOfType<ShakeEffect>();
         if (shakeEffect == null)
         {
-            Debug.LogError("❌ No se encontró ShakeEffect en la escena. Asegúrate de agregarlo a un objeto con la cámara.");
+            Debug.LogError("No se encontró ShakeEffect en la escena. Asegúrate de agregarlo a un objeto con la cámara.");
         }
     }
 
@@ -81,14 +81,14 @@ public class PlayerShooting : MonoBehaviour
         particulasCañonIzq?.Play();
         particulasCañonDer?.Play();
 
-        shakeEffect?.ShakePosition(); // 🔥 Nuevo: Activar el temblor de cámara con LeanTween
+        shakeEffect?.ShakePosition(); //Nuevo: Activar el temblor de cámara con LeanTween
 
         GameObject proyectilIzq = ProjectilePool.instance?.GetProjectile();
         GameObject proyectilDer = ProjectilePool.instance?.GetProjectile();
 
         if (proyectilIzq == null || proyectilDer == null)
         {
-            Debug.LogWarning("⚠ No hay proyectiles en el Pool.");
+            Debug.LogWarning("No hay proyectiles en el Pool.");
             yield return new WaitForSeconds(tiempoRecarga);
             puedeDisparar = true;
             yield break;
