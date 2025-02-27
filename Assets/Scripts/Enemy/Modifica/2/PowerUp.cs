@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Este script gestiona la funcionalidad del power-up.
-/// </summary>
 public class PowerUp : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)

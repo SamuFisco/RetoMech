@@ -50,7 +50,7 @@ public class PowerUpPuntos : MonoBehaviour
             if (powerUpSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(powerUpSound);
-               Debug.Log("🔊 Reproduciendo sonido del Power-Up.");
+               Debug.Log("Reproduciendo sonido del Power-Up.");
                 Destroy(gameObject, powerUpSound.length); // Esperar a que termine el sonido antes de destruir
             }
             else
